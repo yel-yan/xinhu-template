@@ -1,14 +1,13 @@
 package com.xinhu.wrokflow.domain.vo;
 
-import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
-import cn.idev.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.xinhu.common.annotation.ExcelDictFormat;
+import com.xinhu.common.convert.ExcelDictConvert;
+import com.xinhu.wrokflow.domain.FlowSpel;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
-import com.xinhu.common.excel.annotation.ExcelDictFormat;
-import com.xinhu.common.excel.convert.ExcelDictConvert;
-import com.xinhu.workflow.domain.FlowSpel;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -24,7 +23,6 @@ import java.util.Date;
 @AutoMapper(target = FlowSpel.class)
 public class FlowSpelVo implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

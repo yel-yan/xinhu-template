@@ -35,6 +35,15 @@
             <artifactId>xinhu-sms</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.dromara.warm</groupId>
+            <artifactId>warm-flow-mybatis-plus-sb-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dromara.warm</groupId>
+            <artifactId>warm-flow-plugin-ui-sb-web</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -4,6 +4,8 @@ import com.xinhu.common.core.domain.PageQuery;
 import com.xinhu.common.core.domain.entity.SysRole;
 import com.xinhu.common.core.page.TableDataInfo;
 import com.xinhu.system.domain.SysUserRole;
+import com.xinhu.system.domain.bo.SysRoleBo;
+import com.xinhu.system.domain.vo.SysRoleVo;
 
 import java.util.List;
 import java.util.Set;
@@ -17,6 +19,15 @@ public interface ISysRoleService {
 
 
     TableDataInfo<SysRole> selectPageRoleList(SysRole role, PageQuery pageQuery);
+
+    /**
+     * 分页查询角色列表
+     *
+     * @param role      查询条件
+     * @param pageQuery 分页参数
+     * @return 角色分页列表
+     */
+    TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo role, PageQuery pageQuery);
 
     /**
      * 根据条件分页查询角色数据

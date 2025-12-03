@@ -1,12 +1,12 @@
 package com.xinhu.wrokflow.rule;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.xinhu.common.exception.ServiceException;
+import com.xinhu.wrokflow.common.ConditionalOnEnable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.xinhu.common.core.exception.ServiceException;
 import com.xinhu.common.core.service.DeptService;
-import com.xinhu.workflow.common.ConditionalOnEnable;
-import com.springframework.stereotype.Component;
+import org.springframework.stereotype.Component;
 
 /**
  * spel表达式规则组件

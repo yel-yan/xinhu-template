@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinhu.wrokflow.domain.bo.FlowInstanceBo;
 import com.xinhu.wrokflow.domain.vo.FlowInstanceVo;
-import org.springframework.data.repository.query.Param;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 实例信息Mapper接口

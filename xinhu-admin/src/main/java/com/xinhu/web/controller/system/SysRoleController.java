@@ -1,12 +1,14 @@
 package com.xinhu.web.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
 import com.xinhu.common.annotation.Log;
 import com.xinhu.common.constant.UserConstants;
 import com.xinhu.common.core.controller.BaseController;
 import com.xinhu.common.core.domain.PageQuery;
 import com.xinhu.common.core.domain.R;
+import com.xinhu.common.core.domain.entity.SysDept;
 import com.xinhu.common.core.domain.entity.SysRole;
 import com.xinhu.common.core.domain.entity.SysUser;
 import com.xinhu.common.core.domain.model.LoginUser;
@@ -15,15 +17,20 @@ import com.xinhu.common.enums.BusinessType;
 import com.xinhu.common.helper.LoginHelper;
 import com.xinhu.common.utils.poi.ExcelUtil;
 import com.xinhu.system.domain.SysUserRole;
+import com.xinhu.system.domain.bo.SysDeptBo;
+import com.xinhu.system.service.ISysDeptService;
 import com.xinhu.system.service.ISysRoleService;
 import com.xinhu.system.service.ISysUserService;
 import com.xinhu.system.service.SysPermissionService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 角色信息
@@ -38,6 +45,8 @@ public class SysRoleController extends BaseController {
 
     private final ISysRoleService roleService;
     private final ISysUserService userService;
+
+    private final ISysDeptService deptService;
     private final SysPermissionService permissionService;
 
     /**
@@ -215,4 +224,38 @@ public class SysRoleController extends BaseController {
         roleService.checkRoleDataScope(roleId);
         return toAjax(roleService.insertAuthUsers(roleId, userIds));
     }
+
+    /**
+     * 获取对应角色部门树列表
+     *
+     * @param roleId 角色ID
+     */
+    @SaCheckPermission("system:role:list")
+    @GetMapping(value = "/deptTree/{roleId}")
+    public R<DeptTreeSelectVo> roleDeptTreeselect(@PathVariable("roleId") Long roleId) {
+        DeptTreeSelectVo selectVo = new DeptTreeSelectVo(
+            deptService.selectDeptListByRoleId(roleId),
+            deptService.selectDeptTreeList(new SysDept()));
+        return R.ok(selectVo);
+    }
+
+    /**
+     * 角色部门列表树信息
+     *
+     * 选中部门列表
+     *下拉树结构列表
+     */
+    @Data
+    public class DeptTreeSelectVo {
+        private List<Long> checkedKeys;
+        private List<Tree<Long>> depts;
+
+        // 全参构造函数
+        public DeptTreeSelectVo(List<Long> checkedKeys, List<Tree<Long>> depts) {
+            this.checkedKeys = checkedKeys;
+            this.depts = depts;
+        }
+
+    }
+
 }

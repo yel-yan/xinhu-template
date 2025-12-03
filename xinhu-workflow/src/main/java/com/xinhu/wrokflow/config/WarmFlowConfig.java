@@ -1,7 +1,7 @@
 package com.xinhu.wrokflow.config;
 
 import com.xinhu.wrokflow.common.ConditionalOnEnable;
-import com.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * warmFlow配置

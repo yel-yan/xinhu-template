@@ -11,13 +11,6 @@
 
     <artifactId>xinhu-workflow</artifactId>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-
     <dependencies>
 
         <!-- 通用工具-->
@@ -40,7 +33,7 @@
 
         <dependency>
             <groupId>org.dromara.warm</groupId>
-            <artifactId>warm-flow-mybatis-plus-sb3-starter</artifactId>
+            <artifactId>warm-flow-mybatis-plus-sb-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.dromara.warm</groupId>

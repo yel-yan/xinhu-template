@@ -182,7 +182,7 @@ public class FlwDefinitionServiceImpl implements IFlwDefinitionService {
         wrapper.in(FlowHisTask::getDefinitionId, ids);
         List<FlowHisTask> flowHisTasks = flowHisTaskMapper.selectList(wrapper);
         if (CollUtil.isNotEmpty(flowHisTasks)) {
-            List<FlowDefinition> flowDefinitions = flowDefinitionMapper.selectByIds(StreamUtils.toList(flowHisTasks, FlowHisTask::getDefinitionId));
+            List<FlowDefinition> flowDefinitions = flowDefinitionMapper.selectBatchIds(StreamUtils.toList(flowHisTasks, FlowHisTask::getDefinitionId));
             if (CollUtil.isNotEmpty(flowDefinitions)) {
                 String join = StreamUtils.join(flowDefinitions, FlowDefinition::getFlowCode);
                 log.info("流程定义【{}】已被使用不可被删除！", join);
@@ -244,8 +244,9 @@ public class FlwDefinitionServiceImpl implements IFlwDefinitionService {
                         e.setDefinitionId(definitionId);
                         e.setTenantId(tenantId);
                         e.setPermissionFlag(null);
+                        flowNodeMapper.insert( e);
                     });
-                    flowNodeMapper.insertOrUpdate(flowNodeList);
+//                    flowNodeMapper.insertOrUpdate(flowNodeList);
                 }
             }
             if (CollUtil.isNotEmpty(flowSkips)) {
@@ -256,8 +257,9 @@ public class FlwDefinitionServiceImpl implements IFlwDefinitionService {
                         e.setId(null);
                         e.setDefinitionId(definitionId);
                         e.setTenantId(tenantId);
+                        flowSkipMapper.insert(e);
                     });
-                    flowSkipMapper.insertOrUpdate(flowSkipList);
+//                    flowSkipMapper.insertOrUpdate(flowSkipList);
                 }
             }
         }

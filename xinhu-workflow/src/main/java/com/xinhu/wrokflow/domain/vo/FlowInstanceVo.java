@@ -1,10 +1,9 @@
 package com.xinhu.wrokflow.domain.vo;
 
+import com.xinhu.wrokflow.common.constant.FlowConstant;
 import lombok.Data;
 import com.xinhu.common.translation.annotation.Translation;
 import com.xinhu.common.translation.constant.TransConstant;
-import com.xinhu.workflow.common.constant.FlowConstant;
-
 import java.util.Date;
 
 /**

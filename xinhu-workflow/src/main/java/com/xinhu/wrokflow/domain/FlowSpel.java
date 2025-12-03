@@ -3,11 +3,9 @@ package com.xinhu.wrokflow.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.xinhu.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import com.xinhu.common.mybatis.core.domain.BaseEntity;
-
-import java.io.Serial;
 
 /**
  * 流程spel达式定义对象 flow_spel
@@ -20,7 +18,6 @@ import java.io.Serial;
 @TableName("flow_spel")
 public class FlowSpel extends BaseEntity {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

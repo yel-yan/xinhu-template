@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinhu.wrokflow.domain.bo.FlowTaskBo;
 import com.xinhu.wrokflow.domain.vo.FlowHisTaskVo;
 import com.xinhu.wrokflow.domain.vo.FlowTaskVo;
-import org.springframework.data.repository.query.Param;
+import org.apache.ibatis.annotations.Param;
 
 
 /**
@@ -16,7 +16,7 @@ import org.springframework.data.repository.query.Param;
  * @author may
  * @date 2024-03-02
  */
-public interface FlwTaskMapper {
+public interface FlwTaskMapper  {
 
     /**
      * 获取待办信息

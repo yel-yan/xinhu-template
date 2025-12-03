@@ -35,6 +35,11 @@ public class SysPost extends BaseEntity {
     private Long postId;
 
     /**
+     * 部门id
+     */
+    private Long deptId;
+
+    /**
      * 岗位编码
      */
     @ExcelProperty(value = "岗位编码")
@@ -49,6 +54,11 @@ public class SysPost extends BaseEntity {
     @NotBlank(message = "岗位名称不能为空")
     @Size(min = 0, max = 50, message = "岗位名称长度不能超过50个字符")
     private String postName;
+
+    /**
+     * 岗位类别编码
+     */
+    private String postCategory;
 
     /**
      * 岗位排序

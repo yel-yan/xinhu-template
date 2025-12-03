@@ -1,10 +1,9 @@
 package com.xinhu.wrokflow.domain.bo;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import com.xinhu.common.core.validate.AddGroup;
 
-import java.io.Serial;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -15,7 +14,6 @@ import java.io.Serializable;
 @Data
 public class FlowCancelBo implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

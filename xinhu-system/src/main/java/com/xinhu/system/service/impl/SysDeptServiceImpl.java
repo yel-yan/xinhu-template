@@ -1,20 +1,32 @@
 package com.xinhu.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinhu.common.constant.SystemConstants;
 import com.xinhu.common.constant.UserConstants;
+import com.xinhu.common.core.domain.PageQuery;
+import com.xinhu.common.core.domain.dto.DeptDTO;
 import com.xinhu.common.core.domain.entity.SysDept;
 import com.xinhu.common.core.domain.entity.SysRole;
 import com.xinhu.common.core.domain.entity.SysUser;
+import com.xinhu.common.core.page.TableDataInfo;
+import com.xinhu.common.core.service.DeptService;
 import com.xinhu.common.exception.ServiceException;
 import com.xinhu.common.helper.DataBaseHelper;
 import com.xinhu.common.helper.LoginHelper;
+import com.xinhu.common.utils.StreamUtils;
 import com.xinhu.common.utils.StringUtils;
 import com.xinhu.common.utils.TreeBuildUtils;
+import com.xinhu.common.utils.spring.SpringUtils;
+import com.xinhu.system.domain.bo.SysDeptBo;
+import com.xinhu.system.domain.vo.SysDeptVo;
 import com.xinhu.system.mapper.SysDeptMapper;
 import com.xinhu.system.mapper.SysRoleMapper;
 import com.xinhu.system.mapper.SysUserMapper;
@@ -22,9 +34,7 @@ import com.xinhu.system.service.ISysDeptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 部门管理 服务实现
@@ -33,7 +43,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Service
-public class SysDeptServiceImpl implements ISysDeptService {
+public class SysDeptServiceImpl implements ISysDeptService, DeptService {
 
     private final SysDeptMapper baseMapper;
     private final SysRoleMapper roleMapper;
@@ -58,6 +68,43 @@ public class SysDeptServiceImpl implements ISysDeptService {
         return baseMapper.selectDeptList(lqw);
     }
 
+    /**
+     * 分页查询部门管理数据
+     *
+     * @param dept      部门信息
+     * @param pageQuery 分页对象
+     * @return 部门信息集合
+     */
+    @Override
+    public TableDataInfo<SysDeptVo> selectPageDeptList(SysDeptBo dept, PageQuery pageQuery) {
+        Page<SysDeptVo> page = baseMapper.selectPageDeptList(pageQuery.build(), buildQueryWrapper(dept));
+        return TableDataInfo.build(page);
+    }
+
+
+    private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptBo bo) {
+        Map<String, Object> params = bo.getParams();
+        LambdaQueryWrapper<SysDept> lqw = Wrappers.lambdaQuery();
+        lqw.eq(SysDept::getDelFlag, SystemConstants.NORMAL);
+        lqw.eq(ObjectUtil.isNotNull(bo.getDeptId()), SysDept::getDeptId, bo.getDeptId());
+        lqw.eq(ObjectUtil.isNotNull(bo.getParentId()), SysDept::getParentId, bo.getParentId());
+        lqw.like(StringUtils.isNotBlank(bo.getDeptName()), SysDept::getDeptName, bo.getDeptName());
+        lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysDept::getStatus, bo.getStatus());
+        lqw.between(params.get("beginTime") != null && params.get("endTime") != null,
+            SysDept::getCreateTime, params.get("beginTime"), params.get("endTime"));
+        lqw.orderByAsc(SysDept::getAncestors);
+        lqw.orderByAsc(SysDept::getParentId);
+        lqw.orderByAsc(SysDept::getOrderNum);
+        lqw.orderByAsc(SysDept::getDeptId);
+        if (ObjectUtil.isNotNull(bo.getBelongDeptId())) {
+            //部门树搜索
+            lqw.and(x -> {
+                List<Long> deptIds = baseMapper.selectDeptAndChildById(bo.getBelongDeptId());
+                x.in(SysDept::getDeptId, deptIds);
+            });
+        }
+        return lqw;
+    }
     /**
      * 构建前端所需要下拉树结构
      *
@@ -273,4 +320,65 @@ public class SysDeptServiceImpl implements ISysDeptService {
         return baseMapper.deleteById(deptId);
     }
 
+    /**
+     * 通过部门ID查询部门名称
+     *
+     * @param deptIds 部门ID串逗号分隔
+     * @return 部门名称串逗号分隔
+     */
+    @Override
+    public String selectDeptNameByIds(String deptIds) {
+        List<String> list = new ArrayList<>();
+        for (Long id : StringUtils.splitTo(deptIds, Convert::toLong)) {
+            SysDept vo = SpringUtils.getAopProxy(this).selectDeptById(id);
+            if (ObjectUtil.isNotNull(vo)) {
+                list.add(vo.getDeptName());
+            }
+        }
+        return StringUtils.joinComma(list);
+    }
+
+    /**
+     * 根据部门ID查询部门负责人
+     *
+     * @param deptId 部门ID，用于指定需要查询的部门
+     * @return 返回该部门的负责人ID
+     */
+    @Override
+    public Long selectDeptLeaderById(Long deptId) {
+        SysDept vo = SpringUtils.getAopProxy(this).selectDeptById(deptId);
+        return vo.getLeader();
+    }
+
+    /**
+     * 查询部门
+     *
+     * @return 部门列表
+     */
+    @Override
+    public List<DeptDTO> selectDeptsByList() {
+        List<SysDept> list = baseMapper.selectDeptList(new LambdaQueryWrapper<SysDept>()
+            .select(SysDept::getDeptId, SysDept::getDeptName, SysDept::getParentId)
+            .eq(SysDept::getStatus, SystemConstants.NORMAL));
+        return BeanUtil.copyToList(list, DeptDTO.class);
+    }
+
+    /**
+     * 根据部门 ID 列表查询部门名称映射关系
+     *
+     * @param deptIds 部门 ID 列表
+     * @return Map，其中 key 为部门 ID，value 为对应的部门名称
+     */
+    @Override
+    public Map<Long, String> selectDeptNamesByIds(List<Long> deptIds) {
+        if (CollUtil.isEmpty(deptIds)) {
+            return Collections.emptyMap();
+        }
+        List<SysDept> list = baseMapper.selectList(
+            new LambdaQueryWrapper<SysDept>()
+                .select(SysDept::getDeptId, SysDept::getDeptName)
+                .in(SysDept::getDeptId, deptIds)
+        );
+        return StreamUtils.toMap(list, SysDept::getDeptId, SysDept::getDeptName);
+    }
 }

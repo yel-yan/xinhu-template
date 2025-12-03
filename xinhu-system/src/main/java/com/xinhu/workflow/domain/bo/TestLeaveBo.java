@@ -1,0 +1,92 @@
+package com.xinhu.workflow.domain.bo;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.xinhu.common.core.domain.BaseEntity;
+import com.xinhu.common.core.validate.AddGroup;
+import com.xinhu.common.core.validate.EditGroup;
+import com.xinhu.workflow.domain.TestLeave;
+import io.github.linpeilie.annotations.AutoMapper;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+
+/**
+ * 请假业务对象 test_leave
+ *
+ * @author may
+ * @date 2023-07-21
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = TestLeave.class, reverseConvertGenerate = false)
+public class TestLeaveBo extends BaseEntity {
+
+    /**
+     * 主键
+     */
+    @NotNull(message = "主键不能为空", groups = {EditGroup.class})
+    private Long id;
+
+    /**
+     * 流程code
+     */
+    private String flowCode;
+
+    /**
+     * 申请编号
+     */
+    private String applyCode;
+
+    /**
+     * 请假类型
+     */
+    @NotBlank(message = "请假类型不能为空", groups = {AddGroup.class, EditGroup.class})
+    private String leaveType;
+
+    /**
+     * 开始时间
+     */
+    @NotNull(message = "开始时间不能为空", groups = {AddGroup.class, EditGroup.class})
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date startDate;
+
+    /**
+     * 结束时间
+     */
+    @NotNull(message = "结束时间不能为空", groups = {AddGroup.class, EditGroup.class})
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date endDate;
+
+    /**
+     * 请假天数
+     */
+    private Integer leaveDays;
+
+    /**
+     * 开始时间
+     */
+    private Integer startLeaveDays;
+
+    /**
+     * 结束时间
+     */
+    private Integer endLeaveDays;
+
+    /**
+     * 请假原因
+     */
+    private String remark;
+
+    /**
+     * 状态
+     */
+    private String status;
+
+
+}

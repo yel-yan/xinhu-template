@@ -1,7 +1,6 @@
 package com.xinhu.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.xinhu.common.constant.UserConstants;
 import com.xinhu.common.core.domain.entity.SysDictData;
 import com.xinhu.common.core.mapper.BaseMapperPlus;
 import com.xinhu.system.domain.vo.SysDictDataVo;

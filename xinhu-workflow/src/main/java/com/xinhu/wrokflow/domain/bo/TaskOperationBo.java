@@ -1,11 +1,10 @@
 package com.xinhu.wrokflow.domain.bo;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import com.xinhu.common.core.validate.AddGroup;
 import com.xinhu.common.core.validate.EditGroup;
 
-import java.io.Serial;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import java.util.List;
 @Data
 public class TaskOperationBo implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

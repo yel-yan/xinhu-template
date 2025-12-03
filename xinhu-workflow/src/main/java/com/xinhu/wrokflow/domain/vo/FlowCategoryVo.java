@@ -1,14 +1,13 @@
 package com.xinhu.wrokflow.domain.vo;
 
-import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
-import cn.idev.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.xinhu.wrokflow.common.constant.FlowConstant;
+import com.xinhu.wrokflow.domain.FlowCategory;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import com.xinhu.common.translation.annotation.Translation;
-import com.xinhu.workflow.common.constant.FlowConstant;
-import com.xinhu.workflow.domain.FlowCategory;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,7 +22,6 @@ import java.util.Date;
 @AutoMapper(target = FlowCategory.class)
 public class FlowCategoryVo implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

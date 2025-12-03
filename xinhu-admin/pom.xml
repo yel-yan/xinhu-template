@@ -73,11 +73,16 @@
         </dependency>
 
         <!--  demo模块  -->
-        <dependency>
-            <groupId>com.xinhu</groupId>
-            <artifactId>xinhu-demo</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.xinhu</groupId>-->
+<!--            <artifactId>xinhu-demo</artifactId>-->
+<!--        </dependency>-->
 
+<!--          workflow模块  -->
+<!--        <dependency>-->
+<!--            <groupId>com.xinhu</groupId>-->
+<!--            <artifactId>xinhu-workflow</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

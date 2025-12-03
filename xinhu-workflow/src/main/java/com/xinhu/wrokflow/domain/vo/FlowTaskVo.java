@@ -1,12 +1,11 @@
 package com.xinhu.wrokflow.domain.vo;
 
+import com.xinhu.wrokflow.common.constant.FlowConstant;
 import lombok.Data;
 import com.xinhu.common.translation.annotation.Translation;
 import com.xinhu.common.translation.constant.TransConstant;
-import com.xinhu.warm.flow.core.entity.User;
-import com.xinhu.workflow.common.constant.FlowConstant;
+import org.dromara.warm.flow.core.entity.User;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -21,7 +20,6 @@ import java.util.Map;
 @Data
 public class FlowTaskVo implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     private Long id;

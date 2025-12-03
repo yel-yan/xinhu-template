@@ -1,5 +1,6 @@
 package com.xinhu.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -12,11 +13,16 @@ import com.xinhu.common.constant.UserConstants;
 import com.xinhu.common.core.domain.PageQuery;
 import com.xinhu.common.core.domain.entity.SysRole;
 import com.xinhu.common.core.page.TableDataInfo;
+import com.xinhu.common.core.service.RoleService;
 import com.xinhu.common.exception.ServiceException;
 import com.xinhu.common.helper.LoginHelper;
+import com.xinhu.common.utils.BeanCopyUtils;
+import com.xinhu.common.utils.StreamUtils;
 import com.xinhu.system.domain.SysRoleDept;
 import com.xinhu.system.domain.SysRoleMenu;
 import com.xinhu.system.domain.SysUserRole;
+import com.xinhu.system.domain.bo.SysRoleBo;
+import com.xinhu.system.domain.vo.SysRoleVo;
 import com.xinhu.system.mapper.SysRoleDeptMapper;
 import com.xinhu.system.mapper.SysRoleMapper;
 import com.xinhu.system.mapper.SysRoleMenuMapper;
@@ -35,7 +41,7 @@ import java.util.*;
  */
 @RequiredArgsConstructor
 @Service
-public class SysRoleServiceImpl implements ISysRoleService {
+public class SysRoleServiceImpl implements ISysRoleService, RoleService {
 
     private final SysRoleMapper baseMapper;
     private final SysRoleMenuMapper roleMenuMapper;
@@ -45,6 +51,21 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     public TableDataInfo<SysRole> selectPageRoleList(SysRole role, PageQuery pageQuery) {
         Page<SysRole> page = baseMapper.selectPageRoleList(pageQuery.build(), this.buildQueryWrapper(role));
+        return TableDataInfo.build(page);
+    }
+
+    /**
+     * 分页查询角色列表
+     *
+     * @param roleBo      查询条件
+     * @param pageQuery 分页参数
+     * @return 角色分页列表
+     */
+    @Override
+    public TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo roleBo, PageQuery pageQuery) {
+        SysRole role = BeanCopyUtils.copy(roleBo, SysRole.class);
+        assert role != null;
+        Page<SysRoleVo> page = baseMapper.selectPageRoleVoList(pageQuery.build(), this.buildQueryWrapper(role));
         return TableDataInfo.build(page);
     }
 
@@ -408,5 +429,24 @@ public class SysRoleServiceImpl implements ISysRoleService {
             rows = userRoleMapper.insertBatch(list) ? list.size() : 0;
         }
         return rows;
+    }
+
+    /**
+     * 根据角色 ID 列表查询角色名称映射关系
+     *
+     * @param roleIds 角色 ID 列表
+     * @return Map，其中 key 为角色 ID，value 为对应的角色名称
+     */
+    @Override
+    public Map<Long, String> selectRoleNamesByIds(List<Long> roleIds) {
+        if (CollUtil.isEmpty(roleIds)) {
+            return Collections.emptyMap();
+        }
+        List<SysRole> list = baseMapper.selectList(
+            new LambdaQueryWrapper<SysRole>()
+                .select(SysRole::getRoleId, SysRole::getRoleName)
+                .in(SysRole::getRoleId, roleIds)
+        );
+        return StreamUtils.toMap(list, SysRole::getRoleId, SysRole::getRoleName);
     }
 }

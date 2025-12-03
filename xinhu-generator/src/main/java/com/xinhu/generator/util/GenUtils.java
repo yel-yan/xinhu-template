@@ -29,7 +29,6 @@ public class GenUtils {
         genTable.setBusinessName(getBusinessName(genTable.getTableName()));
         genTable.setFunctionName(replaceText(genTable.getTableComment()));
         genTable.setFunctionAuthor(GenConfig.getAuthor());
-        genTable.setCreateBy(operName);
     }
 
     /**

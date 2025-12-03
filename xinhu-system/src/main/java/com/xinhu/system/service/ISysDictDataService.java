@@ -5,6 +5,7 @@ import com.xinhu.common.core.domain.entity.SysDictData;
 import com.xinhu.common.core.page.TableDataInfo;
 import com.xinhu.system.domain.bo.SysDictDataBo;
 import com.xinhu.system.domain.vo.SysDictDataVo;
+import com.xinhu.system.domain.vo.SysDictTypeVo;
 
 import java.util.List;
 

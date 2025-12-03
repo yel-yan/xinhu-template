@@ -3,6 +3,8 @@ package com.xinhu.system.service;
 import com.xinhu.common.core.domain.PageQuery;
 import com.xinhu.common.core.domain.entity.SysUser;
 import com.xinhu.common.core.page.TableDataInfo;
+import com.xinhu.system.domain.bo.SysUserBo;
+import com.xinhu.system.domain.vo.SysUserVo;
 
 import java.util.List;
 
@@ -15,6 +17,16 @@ public interface ISysUserService {
 
 
     TableDataInfo<SysUser> selectPageUserList(SysUser user, PageQuery pageQuery);
+
+    /**
+     * 根据条件分页查询用户列表
+     *
+     * @param user      用户信息
+     * @param pageQuery 发呢也
+     * @return 用户信息
+     */
+    TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery);
+
 
     /**
      * 根据条件分页查询用户列表

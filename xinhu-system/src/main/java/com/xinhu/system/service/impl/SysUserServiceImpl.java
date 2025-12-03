@@ -1,6 +1,8 @@
 package com.xinhu.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -9,12 +11,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinhu.common.constant.SystemConstants;
 import com.xinhu.common.constant.UserConstants;
 import com.xinhu.common.core.domain.PageQuery;
+import com.xinhu.common.core.domain.dto.UserDTO;
 import com.xinhu.common.core.domain.entity.SysDept;
 import com.xinhu.common.core.domain.entity.SysRole;
 import com.xinhu.common.core.domain.entity.SysUser;
 import com.xinhu.common.core.page.TableDataInfo;
+import com.xinhu.common.core.service.UserService;
 import com.xinhu.common.exception.ServiceException;
 import com.xinhu.common.helper.DataBaseHelper;
 import com.xinhu.common.helper.LoginHelper;
@@ -23,6 +28,8 @@ import com.xinhu.common.utils.StringUtils;
 import com.xinhu.system.domain.SysPost;
 import com.xinhu.system.domain.SysUserPost;
 import com.xinhu.system.domain.SysUserRole;
+import com.xinhu.system.domain.bo.SysUserBo;
+import com.xinhu.system.domain.vo.SysUserVo;
 import com.xinhu.system.mapper.*;
 import com.xinhu.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +50,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class SysUserServiceImpl implements ISysUserService {
+public class SysUserServiceImpl implements ISysUserService, UserService {
 
     private final SysUserMapper baseMapper;
     private final SysDeptMapper deptMapper;
@@ -56,6 +63,34 @@ public class SysUserServiceImpl implements ISysUserService {
     public TableDataInfo<SysUser> selectPageUserList(SysUser user, PageQuery pageQuery) {
         Page<SysUser> page = baseMapper.selectPageUserList(pageQuery.build(), this.buildQueryWrapper(user));
         return TableDataInfo.build(page);
+    }
+
+    @Override
+    public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery) {
+        Page<SysUserVo> page = baseMapper.selectPageUserVoList(pageQuery.build(), this.buildQueryWrapper(user));
+        return TableDataInfo.build(page);
+    }
+
+    private Wrapper<SysUser> buildQueryWrapper(SysUserBo user) {
+        Map<String, Object> params = user.getParams();
+        LambdaQueryWrapper<SysUser> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(SysUser::getDelFlag, SystemConstants.NORMAL)
+            .eq(ObjectUtil.isNotNull(user.getUserId()), SysUser::getUserId, user.getUserId())
+            .in(StringUtils.isNotBlank(user.getUserIds()), SysUser::getUserId, StringUtils.splitTo(user.getUserIds(), Convert::toLong))
+            .like(StringUtils.isNotBlank(user.getUserName()), SysUser::getUserName, user.getUserName())
+            .like(StringUtils.isNotBlank(user.getNickName()), SysUser::getNickName, user.getNickName())
+            .eq(StringUtils.isNotBlank(user.getStatus()), SysUser::getStatus, user.getStatus())
+            .like(StringUtils.isNotBlank(user.getPhonenumber()), SysUser::getPhonenumber, user.getPhonenumber())
+            .between(params.get("beginTime") != null && params.get("endTime") != null,
+                SysUser::getCreateTime, params.get("beginTime"), params.get("endTime"))
+            .and(ObjectUtil.isNotNull(user.getDeptId()), w -> {
+                List<Long> ids = deptMapper.selectDeptAndChildById(user.getDeptId());
+                w.in(SysUser::getDeptId, ids);
+            }).orderByAsc(SysUser::getUserId);
+        if (StringUtils.isNotBlank(user.getExcludeUserIds())) {
+            wrapper.notIn(SysUser::getUserId, StringUtils.splitTo(user.getExcludeUserIds(), Convert::toLong));
+        }
+        return wrapper;
     }
 
     /**
@@ -295,8 +330,8 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean registerUser(SysUser user) {
-        user.setCreateBy(user.getUserName());
-        user.setUpdateBy(user.getUserName());
+        user.setCreateBy(user.getUserId());
+        user.setUpdateBy(user.getUserId());
         return baseMapper.insert(user) > 0;
     }
 
@@ -484,4 +519,68 @@ public class SysUserServiceImpl implements ISysUserService {
         return baseMapper.deleteBatchIds(ids);
     }
 
+    @Override
+    public String selectUserNameById(Long userId) {
+        return null;
+    }
+
+    @Override
+    public String selectNicknameById(Long userId) {
+        return null;
+    }
+
+    @Override
+    public String selectNicknameByIds(String userIds) {
+        return null;
+    }
+
+    @Override
+    public String selectPhonenumberById(Long userId) {
+        return null;
+    }
+
+    @Override
+    public String selectEmailById(Long userId) {
+        return null;
+    }
+
+    @Override
+    public List<UserDTO> selectListByIds(List<Long> userIds) {
+        if (CollUtil.isEmpty(userIds)) {
+            return Arrays.asList();
+        }
+        List<SysUser> list = baseMapper.selectList(new LambdaQueryWrapper<SysUser>()
+            .select(SysUser::getUserId, SysUser::getDeptId, SysUser::getUserName,
+                SysUser::getNickName, SysUser::getUserType, SysUser::getEmail,
+                SysUser::getPhonenumber, SysUser::getSex, SysUser::getStatus,
+                SysUser::getCreateTime)
+            .eq(SysUser::getStatus, SystemConstants.NORMAL)
+            .in(SysUser::getUserId, userIds));
+        return BeanUtil.copyToList(list, UserDTO.class);
+    }
+
+    @Override
+    public List<Long> selectUserIdsByRoleIds(List<Long> roleIds) {
+        return null;
+    }
+
+    @Override
+    public List<UserDTO> selectUsersByRoleIds(List<Long> roleIds) {
+        return null;
+    }
+
+    @Override
+    public List<UserDTO> selectUsersByDeptIds(List<Long> deptIds) {
+        return null;
+    }
+
+    @Override
+    public List<UserDTO> selectUsersByPostIds(List<Long> postIds) {
+        return null;
+    }
+
+    @Override
+    public Map<Long, String> selectUserNamesByIds(List<Long> userIds) {
+        return null;
+    }
 }

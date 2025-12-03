@@ -1,6 +1,6 @@
 package com.xinhu.wrokflow.common;
 
-import com.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

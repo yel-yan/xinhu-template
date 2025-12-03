@@ -3,6 +3,8 @@ package com.xinhu.system.service;
 import com.xinhu.common.core.domain.PageQuery;
 import com.xinhu.common.core.page.TableDataInfo;
 import com.xinhu.system.domain.SysPost;
+import com.xinhu.system.domain.bo.SysPostBo;
+import com.xinhu.system.domain.vo.SysPostVo;
 
 import java.util.List;
 
@@ -15,6 +17,16 @@ public interface ISysPostService {
 
 
     TableDataInfo<SysPost> selectPagePostList(SysPost post, PageQuery pageQuery);
+
+    /**
+     * 分页查询岗位列表
+     *
+     * @param post      查询条件
+     * @param pageQuery 分页参数
+     * @return 岗位分页列表
+     */
+    TableDataInfo<SysPostVo> selectPagePostList(SysPostBo post, PageQuery pageQuery);
+
 
     /**
      * 查询岗位信息集合

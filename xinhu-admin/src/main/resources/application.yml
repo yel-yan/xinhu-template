@@ -146,7 +146,7 @@ mybatis-plus:
   # 对应的 XML 文件位置
   mapperLocations: classpath*:mapper/**/*Mapper.xml
   # 实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.xinhu.**.domain
+  typeAliasesPackage: com.xinhu.**.domain;com.xinhu.**.domain.bo;com.xinhu.**.domain.vo
   # 启动时是否检查 MyBatis XML 文件的存在，默认不检查
   checkConfigLocation: false
   configuration:
@@ -161,7 +161,8 @@ mybatis-plus:
     # 更详细的日志输出 会有性能损耗 org.apache.ibatis.logging.stdout.StdOutImpl
     # 关闭日志记录 (可单纯使用 p6spy 分析) org.apache.ibatis.logging.nologging.NoLoggingImpl
     # 默认日志输出 org.apache.ibatis.logging.slf4j.Slf4jImpl
-    logImpl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    #logImpl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    logImpl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     # 是否打印 Logo banner
     banner: true
@@ -251,3 +252,16 @@ management:
       show-details: ALWAYS
     logfile:
       external-file: ./logs/sys-console.log
+
+--- # warm-flow工作流配置
+warm-flow:
+  # 是否开启工作流，默认true
+  enabled: true
+  # 是否开启设计器ui
+  ui: true
+  # 是否显示流程图顶部文字
+  top-text-show: true
+  # 是否渲染节点悬浮提示，默认true
+  node-tooltip: true
+  # 默认Authorization，如果有多个token，用逗号分隔
+  token-name: ${sa-token.token-name}

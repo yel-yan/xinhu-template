@@ -133,3 +133,14 @@ export function deptTreeSelect() {
     method: 'get'
   })
 }
+
+/**
+ * 通过用户ids查询用户
+ * @param userIds
+ */
+export const optionSelect = (userIds) => {
+  return request({
+    url: '/system/user/optionselect?userIds=' + userIds,
+    method: 'get'
+  });
+};

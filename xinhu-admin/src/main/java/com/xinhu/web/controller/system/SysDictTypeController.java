@@ -2,6 +2,7 @@ package com.xinhu.web.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.lock.annotation.Lock4j;
 import com.xinhu.common.annotation.Log;
 import com.xinhu.common.annotation.RepeatSubmit;
 import com.xinhu.common.core.controller.BaseController;
@@ -11,7 +12,9 @@ import com.xinhu.common.core.page.TableDataInfo;
 import com.xinhu.common.enums.BusinessType;
 import com.xinhu.common.utils.poi.ExcelUtil;
 import com.xinhu.system.domain.bo.SysDictDataBo;
+import com.xinhu.system.domain.bo.SysDictTypeBo;
 import com.xinhu.system.domain.vo.SysDictDataVo;
+import com.xinhu.system.domain.vo.SysDictTypeVo;
 import com.xinhu.system.service.ISysDictDataService;
 import com.xinhu.system.service.ISysDictTypeService;
 import lombok.RequiredArgsConstructor;
@@ -34,94 +37,100 @@ import java.util.List;
 @RequestMapping("/system/dict/type")
 public class SysDictTypeController extends BaseController {
 
-    private final ISysDictDataService dictDataService;
     private final ISysDictTypeService dictTypeService;
 
     /**
-     * 查询字典数据列表
+     * 查询字典类型列表
      */
     @SaCheckPermission("system:dict:list")
     @GetMapping("/list")
-    public TableDataInfo<SysDictDataVo> list(SysDictDataBo dictData, PageQuery pageQuery) {
-        return dictDataService.selectPageDictDataList(dictData, pageQuery);
+    public TableDataInfo<SysDictTypeVo> list(SysDictTypeBo dictType, PageQuery pageQuery) {
+        return dictTypeService.selectPageDictTypeList(dictType, pageQuery);
     }
 
     /**
-     * 导出字典数据列表
+     * 导出字典类型列表
      */
-    @Log(title = "字典数据", businessType = BusinessType.EXPORT)
+    @Log(title = "字典类型", businessType = BusinessType.EXPORT)
     @SaCheckPermission("system:dict:export")
     @PostMapping("/export")
-    public void export(SysDictDataBo dictData, HttpServletResponse response) {
-        List<SysDictDataVo> list = dictDataService.selectDictDataList(dictData);
-        ExcelUtil.exportExcel(list, "字典数据", SysDictDataVo.class, response);
+    public void export(SysDictTypeBo dictType, HttpServletResponse response) {
+        List<SysDictTypeVo> list = dictTypeService.selectDictTypeList(dictType);
+        ExcelUtil.exportExcel(list, "字典类型", SysDictTypeVo.class, response);
     }
 
     /**
-     * 查询字典数据详细
+     * 查询字典类型详细
      *
-     * @param dictCode 字典code
+     * @param dictId 字典ID
      */
     @SaCheckPermission("system:dict:query")
-    @GetMapping(value = "/{dictCode}")
-    public R<SysDictDataVo> getInfo(@PathVariable Long dictCode) {
-        return R.ok(dictDataService.selectDictDataById(dictCode));
-    }
-
-    /**
-     * 根据字典类型查询字典数据信息
-     *
-     * @param dictType 字典类型
-     */
-    @GetMapping(value = "/type/{dictType}")
-    public R<List<SysDictDataVo>> dictType(@PathVariable String dictType) {
-        List<SysDictDataVo> data = dictTypeService.selectDictDataByType(dictType);
-        if (ObjectUtil.isNull(data)) {
-            data = new ArrayList<>();
-        }
-        return R.ok(data);
+    @GetMapping(value = "/{dictId}")
+    public R<SysDictTypeVo> getInfo(@PathVariable Long dictId) {
+        return R.ok(dictTypeService.selectDictTypeById(dictId));
     }
 
     /**
      * 新增字典类型
      */
     @SaCheckPermission("system:dict:add")
-    @Log(title = "字典数据", businessType = BusinessType.INSERT)
+    @Log(title = "字典类型", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysDictDataBo dict) {
-        if (!dictDataService.checkDictDataUnique(dict)) {
-            return R.fail("新增字典数据'" + dict.getDictValue() + "'失败，字典键值已存在");
+    public R<Void> add(@Validated @RequestBody SysDictTypeBo dict) {
+        if (!dictTypeService.checkDictTypeUnique(dict)) {
+            return R.fail("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
-        dictDataService.insertDictData(dict);
+        dictTypeService.insertDictType(dict);
         return R.ok();
     }
 
     /**
-     * 修改保存字典类型
+     * 修改字典类型
      */
     @SaCheckPermission("system:dict:edit")
-    @Log(title = "字典数据", businessType = BusinessType.UPDATE)
+    @Log(title = "字典类型", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysDictDataBo dict) {
-        if (!dictDataService.checkDictDataUnique(dict)) {
-            return R.fail("修改字典数据'" + dict.getDictValue() + "'失败，字典键值已存在");
+    public R<Void> edit(@Validated @RequestBody SysDictTypeBo dict) {
+        if (!dictTypeService.checkDictTypeUnique(dict)) {
+            return R.fail("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
-        dictDataService.updateDictData(dict);
+        dictTypeService.updateDictType(dict);
         return R.ok();
     }
 
     /**
      * 删除字典类型
      *
-     * @param dictCodes 字典code串
+     * @param dictIds 字典ID串
      */
     @SaCheckPermission("system:dict:remove")
     @Log(title = "字典类型", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{dictCodes}")
-    public R<Void> remove(@PathVariable Long[] dictCodes) {
-        dictDataService.deleteDictDataByIds(Arrays.asList(dictCodes));
+    @DeleteMapping("/{dictIds}")
+    public R<Void> remove(@PathVariable Long[] dictIds) {
+        dictTypeService.deleteDictTypeByIds(Arrays.asList(dictIds));
         return R.ok();
+    }
+
+    /**
+     * 刷新字典缓存
+     */
+    @SaCheckPermission("system:dict:remove")
+    @Log(title = "字典类型", businessType = BusinessType.CLEAN)
+    @Lock4j
+    @DeleteMapping("/refreshCache")
+    public R<Void> refreshCache() {
+        dictTypeService.resetDictCache();
+        return R.ok();
+    }
+
+    /**
+     * 获取字典选择框列表
+     */
+    @GetMapping("/optionselect")
+    public R<List<SysDictTypeVo>> optionselect() {
+        List<SysDictTypeVo> dictTypes = dictTypeService.selectDictTypeAll();
+        return R.ok(dictTypes);
     }
 }

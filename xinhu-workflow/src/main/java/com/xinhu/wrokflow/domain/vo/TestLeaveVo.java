@@ -1,12 +1,11 @@
 package com.xinhu.wrokflow.domain.vo;
 
-import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
-import cn.idev.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.xinhu.wrokflow.domain.TestLeave;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
-import com.xinhu.workflow.domain.TestLeave;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -22,7 +21,6 @@ import java.util.Date;
 @AutoMapper(target = TestLeave.class)
 public class TestLeaveVo implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

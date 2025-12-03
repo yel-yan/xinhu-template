@@ -82,13 +82,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- 阿里数据库连接池 -->
-<!--            <dependency>-->
-<!--                <groupId>com.alibaba</groupId>-->
-<!--                <artifactId>druid-spring-boot-starter</artifactId>-->
-<!--                <version>${druid.version}</version>-->
-<!--            </dependency>-->
-
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webmvc-core</artifactId>
@@ -316,6 +309,13 @@
                 <version>${xinhu-vue-plus.version}</version>
             </dependency>
 
+            <!-- workflow模块 -->
+<!--            <dependency>-->
+<!--                <groupId>com.xinhu</groupId>-->
+<!--                <artifactId>xinhu-workflow</artifactId>-->
+<!--                <version>${xinhu-vue-plus.version}</version>-->
+<!--            </dependency>-->
+
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
@@ -325,7 +325,7 @@
             <!-- Warm-Flow国产工作流引擎, 在线文档：http://warm-flow.cn/ -->
             <dependency>
                 <groupId>org.dromara.warm</groupId>
-                <artifactId>warm-flow-mybatis-plus-sb3-starter</artifactId>
+                <artifactId>warm-flow-mybatis-plus-sb-starter</artifactId>
                 <version>${warm-flow.version}</version>
             </dependency>
             <dependency>
@@ -347,7 +347,7 @@
         <module>xinhu-extend</module>
         <module>xinhu-oss</module>
         <module>xinhu-sms</module>
-        <module>xinhu-workflow</module>
+<!--        <module>xinhu-workflow</module>-->
     </modules>
     <packaging>pom</packaging>
 

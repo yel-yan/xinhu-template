@@ -7,6 +7,7 @@ import com.xinhu.common.annotation.DataColumn;
 import com.xinhu.common.annotation.DataPermission;
 import com.xinhu.common.core.domain.entity.SysRole;
 import com.xinhu.common.core.mapper.BaseMapperPlus;
+import com.xinhu.system.domain.vo.SysRoleVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,13 +17,27 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, SysRole> {
+public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, SysRoleVo> {
 
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id")
     })
     Page<SysRole> selectPageRoleList(@Param("page") Page<SysRole> page, @Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
 
+    /**
+     * 分页查询角色列表
+     *
+     * @param page         分页对象
+     * @param queryWrapper 查询条件
+     * @return 包含角色信息的分页结果
+     */
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "create_dept"),
+        @DataColumn(key = "userName", value = "create_by")
+    })
+    default Page<SysRoleVo> selectPageRoleVoList(@Param("page") Page<SysRole> page, @Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper) {
+        return this.selectVoPage(page, queryWrapper);
+    }
     /**
      * 根据条件分页查询角色数据
      *

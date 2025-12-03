@@ -1,0 +1,34 @@
+package com.xinhu.workflow.domain.vo;
+
+import com.xinhu.common.translation.annotation.Translation;
+import com.xinhu.common.translation.constant.TransConstant;
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * 抄送对象
+ *
+ * @author AprilWind
+ */
+@Data
+public class FlowCopyVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
+     * 用户名称
+     */
+    @Translation(type = TransConstant.USER_ID_TO_NICKNAME, mapper = "userId")
+    private String userName;
+
+    public FlowCopyVo(Long userId) {
+        this.userId = userId;
+    }
+
+}

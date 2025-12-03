@@ -1,7 +1,11 @@
 package com.xinhu.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.xinhu.common.core.domain.PageQuery;
 import com.xinhu.common.core.domain.entity.SysDept;
+import com.xinhu.common.core.page.TableDataInfo;
+import com.xinhu.system.domain.bo.SysDeptBo;
+import com.xinhu.system.domain.vo.SysDeptVo;
 
 import java.util.List;
 
@@ -18,6 +22,15 @@ public interface ISysDeptService {
      * @return 部门信息集合
      */
     List<SysDept> selectDeptList(SysDept dept);
+
+    /**
+     * 分页查询部门管理数据
+     *
+     * @param dept      部门信息
+     * @param pageQuery 分页对象
+     * @return 部门信息集合
+     */
+    TableDataInfo<SysDeptVo> selectPageDeptList(SysDeptBo dept, PageQuery pageQuery);
 
     /**
      * 构建前端所需要下拉树结构

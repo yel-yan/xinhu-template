@@ -59,7 +59,6 @@ import java.util.stream.Collectors;
  *
  * @author may
  */
-@ConditionalOnEnable
 @Slf4j
 @RequiredArgsConstructor
 @Service

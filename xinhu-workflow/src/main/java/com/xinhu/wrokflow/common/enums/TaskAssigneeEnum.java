@@ -1,9 +1,9 @@
 package com.xinhu.wrokflow.common.enums;
 
+import com.xinhu.common.exception.ServiceException;
+import com.xinhu.common.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import com.xinhu.common.core.exception.ServiceException;
-import com.xinhu.common.core.utils.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;

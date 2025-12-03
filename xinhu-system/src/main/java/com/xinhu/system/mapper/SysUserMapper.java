@@ -7,6 +7,7 @@ import com.xinhu.common.annotation.DataColumn;
 import com.xinhu.common.annotation.DataPermission;
 import com.xinhu.common.core.domain.entity.SysUser;
 import com.xinhu.common.core.mapper.BaseMapperPlus;
+import com.xinhu.system.domain.vo.SysUserVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, SysUser> {
+public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, SysUserVo> {
 
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id"),
@@ -24,6 +25,20 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
     })
     Page<SysUser> selectPageUserList(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
+    /**
+     * 分页查询用户列表，并进行数据权限控制
+     *
+     * @param page         分页参数
+     * @param queryWrapper 查询条件
+     * @return 分页的用户信息
+     */
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "dept_id"),
+        @DataColumn(key = "userName", value = "create_by")
+    })
+    default Page<SysUserVo> selectPageUserVoList(Page<SysUser> page, Wrapper<SysUser> queryWrapper) {
+        return this.selectVoPage(page, queryWrapper);
+    }
     /**
      * 根据条件分页查询用户列表
      *

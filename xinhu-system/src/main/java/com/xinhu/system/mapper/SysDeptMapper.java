@@ -1,11 +1,16 @@
 package com.xinhu.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinhu.common.annotation.DataColumn;
 import com.xinhu.common.annotation.DataPermission;
 import com.xinhu.common.core.domain.entity.SysDept;
 import com.xinhu.common.core.mapper.BaseMapperPlus;
+import com.xinhu.common.helper.DataBaseHelper;
+import com.xinhu.common.utils.StreamUtils;
+import com.xinhu.system.domain.vo.SysDeptVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -15,7 +20,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, SysDept> {
+public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, SysDeptVo> {
 
     /**
      * 查询部门管理数据
@@ -27,6 +32,44 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, Sy
         @DataColumn(key = "deptName", value = "dept_id")
     })
     List<SysDept> selectDeptList(@Param(Constants.WRAPPER) Wrapper<SysDept> queryWrapper);
+
+    /**
+     * 分页查询部门管理数据
+     *
+     * @param page         分页信息
+     * @param queryWrapper 查询条件
+     * @return 部门信息集合
+     */
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "dept_id"),
+    })
+    default Page<SysDeptVo> selectPageDeptList(Page<SysDept> page, Wrapper<SysDept> queryWrapper) {
+        return this.selectVoPage(page, queryWrapper);
+    }
+    /**
+     * 查询某个部门及其所有子部门ID（含自身）
+     *
+     * @param parentId 父部门ID
+     * @return 部门ID集合
+     */
+    default List<Long> selectDeptAndChildById(Long parentId) {
+        List<SysDept> deptList = this.selectListByParentId(parentId);
+        List<Long> deptIds = StreamUtils.toList(deptList, SysDept::getDeptId);
+        deptIds.add(parentId);
+        return deptIds;
+    }
+
+    /**
+     * 根据父部门ID查询其所有子部门的列表
+     *
+     * @param parentId 父部门ID
+     * @return 包含子部门的列表
+     */
+    default List<SysDept> selectListByParentId(Long parentId) {
+        return this.selectList(new LambdaQueryWrapper<SysDept>()
+            .select(SysDept::getDeptId)
+            .apply(DataBaseHelper.findInSet(parentId, "ancestors")));
+    }
 
     /**
      * 根据角色ID查询部门树信息
