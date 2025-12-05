@@ -15,11 +15,13 @@ import com.xinhu.common.enums.BusinessType;
 import com.xinhu.common.utils.StreamUtils;
 import com.xinhu.common.utils.StringUtils;
 import com.xinhu.common.utils.redis.CacheUtils;
+import com.xinhu.common.utils.redis.RedisUtils;
 import com.xinhu.system.domain.SysUserOnline;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +45,9 @@ public class SysUserOnlineController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo<SysUserOnline> list(String ipaddr, String userName) {
         // 获取所有未过期的 token
-        List<String> keys = StpUtil.searchTokenValue("", -1, 0,false);
+//        List<String> keys = StpUtil.searchTokenValue("", -1, 0,false);
+        // 获取所有未过期的 token
+        Collection<String> keys = RedisUtils.keys(CacheConstants.ONLINE_TOKEN_KEY + "*");
         List<UserOnlineDTO> userOnlineDTOList = new ArrayList<>();
         for (String key : keys) {
             String token = key.replace(CacheConstants.LOGIN_TOKEN_KEY, "");

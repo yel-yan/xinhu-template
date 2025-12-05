@@ -150,7 +150,7 @@ const getFinishList = () => {
 };
 /** 查看按钮操作 */
 const handleView = (row) => {
-  const routerJumpVo = reactive<RouterJumpVo>({
+  const routerJumpVo = reactive({
     businessId: row.businessId,
     taskId: row.id,
     type: 'view',

@@ -230,7 +230,7 @@ const handleCancelProcessApply = async (businessId) => {
 
 //办理
 const handleOpen = async (row, type) => {
-  const routerJumpVo = reactive<RouterJumpVo>({
+  const routerJumpVo = reactive({
     businessId: row.businessId,
     taskId: row.id,
     type: type,

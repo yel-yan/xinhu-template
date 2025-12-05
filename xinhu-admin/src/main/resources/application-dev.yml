@@ -91,29 +91,6 @@ spring:
         # 多久检查一次连接的活性
         keepaliveTime: 30000
 
---- # druid 配置
-spring.datasource.druid:
-  webStatFilter:
-    enabled: true
-  statViewServlet:
-    enabled: true
-    # 设置白名单，不填则允许所有访问
-    allow:
-    url-pattern: /druid/*
-    # 控制台管理用户名和密码
-    login-username: xinhu
-    login-password: 123456
-  filter:
-    stat:
-      enabled: true
-      # 慢SQL记录
-      log-slow-sql: true
-      slow-sql-millis: 1000
-      merge-sql: true
-    wall:
-      config:
-        multi-statement-allow: true
-
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring:
   redis:
