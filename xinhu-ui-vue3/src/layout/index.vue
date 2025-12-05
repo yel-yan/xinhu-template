@@ -18,6 +18,7 @@ import { useWindowSize } from '@vueuse/core'
 import Sidebar from './components/Sidebar/index.vue'
 import { AppMain, Navbar, Settings, TagsView } from './components'
 import defaultSettings from '@/settings'
+import { initSSE } from '@/utils/sse';
 
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
@@ -51,6 +52,10 @@ watchEffect(() => {
     useAppStore().toggleDevice('desktop')
   }
 })
+
+onMounted(() => {
+  initSSE(import.meta.env.VITE_APP_BASE_API + '/resource/sse');
+});
 
 function handleClickOutside() {
   useAppStore().closeSideBar({ withoutAnimation: false })

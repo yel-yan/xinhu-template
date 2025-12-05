@@ -27,7 +27,7 @@ public interface ISysRoleService {
      * @param pageQuery 分页参数
      * @return 角色分页列表
      */
-    TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo role, PageQuery pageQuery);
+    TableDataInfo<SysRoleVo> selectPageRoleVoList(SysRoleBo role, PageQuery pageQuery);
 
     /**
      * 根据条件分页查询角色数据

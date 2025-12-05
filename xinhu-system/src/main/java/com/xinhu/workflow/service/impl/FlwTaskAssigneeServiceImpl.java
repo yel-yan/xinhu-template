@@ -25,6 +25,7 @@ import org.dromara.warm.flow.ui.dto.HandlerFunDto;
 import org.dromara.warm.flow.ui.dto.HandlerQuery;
 import org.dromara.warm.flow.ui.dto.TreeFunDto;
 import org.dromara.warm.flow.ui.service.HandlerSelectService;
+import org.dromara.warm.flow.ui.vo.HandlerAuth;
 import org.dromara.warm.flow.ui.vo.HandlerFeedBackVo;
 import org.dromara.warm.flow.ui.vo.HandlerSelectVo;
 import org.springframework.stereotype.Service;
@@ -138,6 +139,41 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
         }
     }
 
+    @Override
+    public <T> HandlerSelectVo getHandlerSelectVo(HandlerFunDto<T> handlerFunDto) {
+        List<HandlerAuth> handlerAuths = new ArrayList<>();
+
+        for (T obj : handlerFunDto.getList()) {
+            HandlerAuth handlerAuth = new HandlerAuth();
+            handlerAuth.setStorageId(handlerFunDto.getStorageId() == null ? null : (String) handlerFunDto.getStorageId().apply(obj));
+            handlerAuth.setHandlerCode(handlerFunDto.getHandlerCode() == null ? null : (String) handlerFunDto.getHandlerCode().apply(obj));
+            handlerAuth.setHandlerName(handlerFunDto.getHandlerName() == null ? null : (String) handlerFunDto.getHandlerName().apply(obj));
+            handlerAuth.setGroupName(handlerFunDto.getGroupName() == null ? null : (String) handlerFunDto.getGroupName().apply(obj));
+            handlerAuth.setCreateTime(handlerFunDto.getCreateTime() == null ? null : (String) handlerFunDto.getCreateTime().apply(obj));
+            handlerAuths.add(handlerAuth);
+        }
+//        List<HandlerAuth> handlerAuths = handlerFunDto.getList().stream()
+//            .map(obj -> new HandlerAuth()
+//                .setStorageId(Optional.ofNullable(handlerFunDto.getStorageId())
+//                    .map(func -> (String) func.apply(obj))
+//                    .orElse(null))
+//                .setHandlerCode(Optional.ofNullable(handlerFunDto.getHandlerCode())
+//                    .map(func -> (String) func.apply(obj))
+//                    .orElse( null))
+//                .setHandlerName(Optional.ofNullable(handlerFunDto.getHandlerName())
+//                    .map(func -> (String) func.apply(obj))
+//                    .orElse( null))
+//                .setCreateTime(Optional.ofNullable(handlerFunDto.getCreateTime())
+//                    .map(func -> (String) func.apply(obj))
+//                    .orElse( null))
+//                .setGroupName(Optional.ofNullable(handlerFunDto.getGroupName())
+//                    .map(func -> (String) func.apply(obj))
+//                    .orElse( null)))
+//            .collect(Collectors.toList());
+
+        return this.getResult(handlerAuths, handlerFunDto.getTotal());
+    }
+
     /**
      * 根据任务办理类型获取部门数据
      */
@@ -169,22 +205,24 @@ public class FlwTaskAssigneeServiceImpl implements IFlwTaskAssigneeService, Hand
      * 构建部门树状结构
      */
     private TreeFunDto<DeptDTO> buildDeptTree(List<DeptDTO> depts) {
-        return new TreeFunDto<>(depts)
+        TreeFunDto<DeptDTO> deptDTOTreeFunDto = new TreeFunDto<>(depts)
             .setId(dept -> Convert.toStr(dept.getDeptId()))
             .setName(DeptDTO::getDeptName)
             .setParentId(dept -> Convert.toStr(dept.getParentId()));
+        return deptDTOTreeFunDto;
     }
 
     /**
      * 构建任务办理人数据
      */
     private HandlerFunDto<TaskAssigneeDTO.TaskHandler> buildHandlerData(TaskAssigneeDTO dto, TaskAssigneeEnum type) {
-        return new HandlerFunDto<>(dto.getList(), dto.getTotal())
+        HandlerFunDto<TaskAssigneeDTO.TaskHandler> taskHandlerHandlerFunDto = new HandlerFunDto<>(dto.getList(), dto.getTotal())
             .setStorageId(assignee -> type.getCode() + assignee.getStorageId())
             .setHandlerCode(assignee -> StringUtils.blankToDefault(assignee.getHandlerCode(), "无"))
             .setHandlerName(assignee -> StringUtils.blankToDefault(assignee.getHandlerName(), "无"))
             .setGroupName(assignee -> this.getGroupName(type, assignee.getGroupName()))
             .setCreateTime(assignee -> DateUtils.parseDateToStr(FormatsType.YYYY_MM_DD_HH_MM_SS, assignee.getCreateTime()));
+        return taskHandlerHandlerFunDto;
     }
 
     /**

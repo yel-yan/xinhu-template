@@ -132,9 +132,8 @@
   </el-dialog>
 </template>
 
-<script setup name="submitVerify">
+<script setup name="SubmitVerify">
 import { ref } from 'vue';
-import { ComponentInternalInstance } from 'vue';
 import { ElForm } from 'element-plus';
 import {
   completeTask,
@@ -149,7 +148,6 @@ import {
 import UserSelect from '@/components/UserSelect';
 
 const { proxy } = getCurrentInstance();
-import { FlowCopyVo, FlowTaskVO, TaskOperationBo } from '@/api/workflow/task/types';
 
 const userSelectCopyRef = ref();
 const transferTaskRef = ref();
@@ -176,9 +174,9 @@ const selectCopyUserIds = ref(undefined);
 //自定义节点变量
 const varNodeList = ref(undefined);
 //可减签的人员
-const deleteUserList = ref<any>([]);
+const deleteUserList = ref([]);
 //弹窗可选择的人员id
-const popUserIds = ref<any>([]);
+const popUserIds = ref([]);
 //驳回是否显示
 const backVisible = ref(false);
 const backLoading = ref(true);
@@ -188,7 +186,7 @@ const taskNodeList = ref([]);
 const nickName = ref({});
 //节点编码
 const nodeCode = ref('');
-const buttonObj = ref<any>({
+const buttonObj = ref({
   pop: false,
   trust: false,
   transfer: false,
@@ -394,7 +392,7 @@ const openMultiInstanceUser = async () => {
 //加签
 const addMultiInstanceUser = async (data) => {
   if (data && data.length > 0) {
-    const taskOperationBo = reactive<TaskOperationBo>({
+    const taskOperationBo = reactive({
       userIds: data.map((e) => e.userId),
       taskId: taskId.value,
       message: form.value.message
@@ -418,7 +416,7 @@ const deleteMultiInstanceUser = async (row) => {
   await proxy?.$modal.confirm('是否确认提交？');
   loading.value = true;
   buttonDisabled.value = true;
-  const taskOperationBo = reactive<TaskOperationBo>({
+  const taskOperationBo = reactive({
     userIds: [row.userId],
     taskId: taskId.value,
     message: form.value.message
@@ -438,7 +436,7 @@ const openTransferTask = () => {
 //转办
 const handleTransferTask = async (data) => {
   if (data && data.length > 0) {
-    const taskOperationBo = reactive<TaskOperationBo>({
+    const taskOperationBo = reactive({
       userId: data[0].userId,
       taskId: taskId.value,
       message: form.value.message
@@ -465,7 +463,7 @@ const openDelegateTask = () => {
 //委托
 const handleDelegateTask = async (data) => {
   if (data && data.length > 0) {
-    const taskOperationBo = reactive<TaskOperationBo>({
+    const taskOperationBo = reactive({
       userId: data[0].userId,
       taskId: taskId.value,
       message: form.value.message

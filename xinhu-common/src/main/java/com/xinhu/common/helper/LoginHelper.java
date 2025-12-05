@@ -104,7 +104,8 @@ public class LoginHelper {
      * 获取用户id
      */
     public static String getUserIdStr() {
-        return Convert.toStr(getExtra(USER_KEY));
+        return getUserId().toString();
+//        return Convert.toStr(getExtra(USER_KEY));
     }
 
     /**

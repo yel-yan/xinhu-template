@@ -153,7 +153,7 @@ const getWaitingList = () => {
 };
 //办理
 const handleOpen = async (row) => {
-  const routerJumpVo = reactive<RouterJumpVo>({
+  const routerJumpVo = reactive({
     businessId: row.businessId,
     taskId: row.id,
     type: 'approval',

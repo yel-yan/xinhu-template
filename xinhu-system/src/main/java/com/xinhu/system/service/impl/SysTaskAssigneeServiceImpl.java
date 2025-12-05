@@ -56,7 +56,7 @@ public class SysTaskAssigneeServiceImpl implements TaskAssigneeService {
         Map<String, Object> params = bo.getParams();
         params.put("beginTime", taskQuery.getBeginTime());
         params.put("endTime", taskQuery.getEndTime());
-        TableDataInfo<SysRoleVo> page = roleService.selectPageRoleList(bo, pageQuery);
+        TableDataInfo<SysRoleVo> page = roleService.selectPageRoleVoList(bo, pageQuery);
         // 使用封装的字段映射方法进行转换
         List<TaskAssigneeDTO.TaskHandler> handlers = TaskAssigneeDTO.convertToHandlerList(page.getRows(),
             item -> Convert.toStr(item.getRoleId()), SysRoleVo::getRoleKey, SysRoleVo::getRoleName, item -> "", SysRoleVo::getCreateTime);

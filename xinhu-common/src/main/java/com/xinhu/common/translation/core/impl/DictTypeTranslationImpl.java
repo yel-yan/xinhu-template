@@ -6,6 +6,8 @@ import com.xinhu.common.translation.constant.TransConstant;
 import com.xinhu.common.translation.core.TranslationInterface;
 import com.xinhu.common.utils.StringUtils;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * 字典翻译实现
@@ -14,6 +16,8 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 @TranslationType(type = TransConstant.DICT_TYPE_TO_LABEL)
+@Slf4j
+@Service
 public class DictTypeTranslationImpl implements TranslationInterface<String> {
 
     private final DictService dictService;

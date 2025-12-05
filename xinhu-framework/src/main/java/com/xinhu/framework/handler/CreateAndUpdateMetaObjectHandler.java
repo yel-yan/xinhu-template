@@ -11,6 +11,7 @@ import com.xinhu.common.utils.ObjectUtils;
 import com.xinhu.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
+import org.dromara.warm.flow.core.entity.RootEntity;
 
 import java.util.Date;
 
@@ -55,6 +56,22 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
                     }
                 }
             } else {
+//                if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof RootEntity) {
+//                    RootEntity baseEntity = (RootEntity) metaObject.getOriginalObject();
+//                    if (ObjectUtil.isNull(baseEntity.getCreateBy())) {
+//                        LoginUser loginUser = getLoginUser();
+//                        if (ObjectUtil.isNotNull(loginUser)) {
+//                            Long userId = loginUser.getUserId();
+//                            // 填充创建人、更新人和创建部门信息
+//                            baseEntity.setCreateBy(userId.toString());
+//                            baseEntity.setUpdateBy(userId.toString());
+//                        } else {
+//                            // 填充创建人、更新人和创建部门信息
+//                            baseEntity.setCreateBy(DEFAULT_USER_ID.toString());
+//                            baseEntity.setUpdateBy(DEFAULT_USER_ID.toString());
+//                        }
+//                    }
+//                }
                 Date date = new Date();
                 this.strictInsertFill(metaObject, "createTime", Date.class, date);
                 this.strictInsertFill(metaObject, "updateTime", Date.class, date);
@@ -86,6 +103,16 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
                     baseEntity.setUpdateBy(DEFAULT_USER_ID);
                 }
             } else {
+//                if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof RootEntity) {
+//                    RootEntity baseEntity = (RootEntity) metaObject.getOriginalObject();
+//                    // 获取当前登录用户的ID，并填充更新人信息
+//                    Long userId = LoginHelper.getUserId();
+//                    if (ObjectUtil.isNotNull(userId)) {
+//                        baseEntity.setUpdateBy(userId.toString());
+//                    } else {
+//                        baseEntity.setUpdateBy(DEFAULT_USER_ID.toString());
+//                    }
+//                }
                 this.strictUpdateFill(metaObject, "updateTime", Date.class, new Date());
             }
         } catch (Exception e) {

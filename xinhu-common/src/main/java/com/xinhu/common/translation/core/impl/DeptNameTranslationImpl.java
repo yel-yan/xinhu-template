@@ -5,6 +5,9 @@ import com.xinhu.common.translation.annotation.TranslationType;
 import com.xinhu.common.translation.constant.TransConstant;
 import com.xinhu.common.translation.core.TranslationInterface;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * 部门翻译实现
@@ -13,6 +16,8 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 @TranslationType(type = TransConstant.DEPT_ID_TO_NAME)
+@Slf4j
+@Service
 public class DeptNameTranslationImpl implements TranslationInterface<String> {
 
     private final DeptService deptService;

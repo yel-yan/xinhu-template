@@ -4,11 +4,11 @@
  * @Autor: yel
  * @Date: 2025-12-01 15:55:16
  * @LastEditors: yel
- * @LastEditTime: 2025-12-02 17:11:08
+ * @LastEditTime: 2025-12-03 16:12:08
 -->
 <template>
   <div ref="container" class="w-full h-[calc(100vh-88px)]">
-    <iframe ref="iframe" :src="iframeUrl" frameborder="0" height="100%" style="height: 100%; width: inherit"></iframe>
+    <iframe ref="iframe" :src="iframeUrl" frameborder="0" height="100%" class="w-full"></iframe>
   </div>
 </template>
 
@@ -52,3 +52,12 @@ defineExpose({
   open
 });
 </script>
+<style lang="scss" scoped>
+.w-full {
+  /* 50= navbar  50  */
+  min-height: calc(100vh - 95px);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+</style>

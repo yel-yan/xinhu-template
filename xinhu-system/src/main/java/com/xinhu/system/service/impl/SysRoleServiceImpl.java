@@ -62,9 +62,7 @@ public class SysRoleServiceImpl implements ISysRoleService, RoleService {
      * @return 角色分页列表
      */
     @Override
-    public TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo roleBo, PageQuery pageQuery) {
-        SysRole role = BeanCopyUtils.copy(roleBo, SysRole.class);
-        assert role != null;
+    public TableDataInfo<SysRoleVo> selectPageRoleVoList(SysRoleBo role, PageQuery pageQuery) {
         Page<SysRoleVo> page = baseMapper.selectPageRoleVoList(pageQuery.build(), this.buildQueryWrapper(role));
         return TableDataInfo.build(page);
     }
@@ -78,6 +76,19 @@ public class SysRoleServiceImpl implements ISysRoleService, RoleService {
     @Override
     public List<SysRole> selectRoleList(SysRole role) {
         return baseMapper.selectRoleList(this.buildQueryWrapper(role));
+    }
+
+    private Wrapper<SysRole> buildQueryWrapper(SysRoleBo bo) {
+        Map<String, Object> params = bo.getParams();
+        LambdaQueryWrapper<SysRole> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(ObjectUtil.isNotNull(bo.getRoleId()), SysRole::getRoleId, bo.getRoleId())
+            .like(StringUtils.isNotBlank(bo.getRoleName()), SysRole::getRoleName, bo.getRoleName())
+            .eq(StringUtils.isNotBlank(bo.getStatus()), SysRole::getStatus, bo.getStatus())
+            .like(StringUtils.isNotBlank(bo.getRoleKey()), SysRole::getRoleKey, bo.getRoleKey())
+            .between(params.get("beginTime") != null && params.get("endTime") != null,
+                SysRole::getCreateTime, params.get("beginTime"), params.get("endTime"))
+            .orderByAsc(SysRole::getRoleSort).orderByAsc(SysRole::getCreateTime);
+        return wrapper;
     }
 
     private Wrapper<SysRole> buildQueryWrapper(SysRole role) {

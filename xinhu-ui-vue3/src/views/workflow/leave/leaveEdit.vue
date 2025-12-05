@@ -53,22 +53,19 @@
   </div>
 </template>
 
-<script setup name="Leave" lang="ts">
+<script setup name="Leave">
 import { addLeave, getLeave, submitAndFlowStart, updateLeave } from '@/api/workflow/leave';
-import { LeaveForm, LeaveQuery, LeaveVO } from '@/api/workflow/leave/types';
 import { startWorkFlow } from '@/api/workflow/task';
 import SubmitVerify from '@/components/Process/submitVerify.vue';
 import ApprovalRecord from '@/components/Process/approvalRecord.vue';
 import ApprovalButton from '@/components/Process/approvalButton.vue';
-import { AxiosResponse } from 'axios';
-import { StartProcessBo } from '@/api/workflow/workflowCommon/types';
-const { proxy } = getCurrentInstance() as ComponentInternalInstance;
+const { proxy } = getCurrentInstance();
 
 const buttonLoading = ref(false);
 const loading = ref(true);
-const leaveTime = ref<Array<string>>([]);
+const leaveTime = ref([]);
 //路由参数
-const routeParams = ref<Record<string, any>>({});
+const routeParams = ref({});
 const options = [
   {
     value: '1',
@@ -114,25 +111,25 @@ const flowCodeOptions = [
   }
 ];
 // 自定义流程可不选择 直接填写flowCode 例如 'leave1'
-const flowCode = ref<string>('leave1');
+const flowCode = ref('leave1');
 
 //提交组件
-const submitVerifyRef = ref<InstanceType<typeof SubmitVerify>>();
+const submitVerifyRef = ref();
 //审批记录组件
-const approvalRecordRef = ref<InstanceType<typeof ApprovalRecord>>();
+const approvalRecordRef = ref();
 
-const leaveFormRef = ref<ElFormInstance>();
+const leaveFormRef = ref();
 
-const submitFormData = ref<StartProcessBo>({
+const submitFormData = ref({
   businessId: '',
   flowCode: '',
   variables: {},
   bizExt: {}
 });
-const taskVariables = ref<Record<string, any>>({});
-const bizExt = ref<Record<string, any>>({});
+const taskVariables = ref({});
+const bizExt = ref({});
 
-const initFormData: LeaveForm = {
+const initFormData = {
   id: undefined,
   leaveType: undefined,
   startDate: undefined,
@@ -141,7 +138,7 @@ const initFormData: LeaveForm = {
   remark: undefined,
   status: undefined
 };
-const data = reactive<PageData<LeaveForm, LeaveQuery>>({
+const data = reactive({
   form: { ...initFormData },
   queryParams: {
     pageNum: 1,
@@ -188,13 +185,13 @@ const getInfo = () => {
 };
 
 /** 提交按钮 */
-const submitForm = (status: string, mode: boolean) => {
+const submitForm = (status, mode) => {
   if (leaveTime.value.length === 0) {
     proxy?.$modal.msgError('请假时间不能为空');
     return;
   }
   try {
-    leaveFormRef.value?.validate(async (valid: boolean) => {
+    leaveFormRef.value?.validate(async (valid) => {
       form.value.startDate = leaveTime.value[0];
       form.value.endDate = leaveTime.value[1];
       if (valid) {
@@ -232,7 +229,7 @@ const submitForm = (status: string, mode: boolean) => {
 };
 
 //提交申请
-const handleStartWorkFlow = async (data: LeaveForm) => {
+const handleStartWorkFlow = async (data) => {
   try {
     submitFormData.value.flowCode = flowCode.value;
     submitFormData.value.businessId = data.id;

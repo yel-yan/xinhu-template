@@ -21,6 +21,21 @@ public interface CacheNames {
     String DEMO_CACHE = "demo:cache#60s#10m#20";
 
     /**
+     * 用户账户
+     */
+    String SYS_USER_NAME = "sys_user_name#30d";
+
+    /**
+     * 用户名称
+     */
+    String SYS_NICKNAME = "sys_nickname#30d";
+
+    /**
+     * 部门
+     */
+    String SYS_DEPT = "sys_dept#30d";
+
+    /**
      * 系统配置
      */
     String SYS_CONFIG = "sys_config";

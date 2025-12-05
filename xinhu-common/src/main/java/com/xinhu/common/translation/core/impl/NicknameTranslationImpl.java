@@ -5,6 +5,8 @@ import com.xinhu.common.translation.annotation.TranslationType;
 import com.xinhu.common.translation.constant.TransConstant;
 import com.xinhu.common.translation.core.TranslationInterface;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * 用户名称翻译实现
@@ -13,6 +15,8 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 @TranslationType(type = TransConstant.USER_ID_TO_NICKNAME)
+@Slf4j
+@Service
 public class NicknameTranslationImpl implements TranslationInterface<String> {
 
     private final UserService userService;

@@ -4,14 +4,18 @@ import com.xinhu.common.core.service.OssService;
 import com.xinhu.common.translation.annotation.TranslationType;
 import com.xinhu.common.translation.constant.TransConstant;
 import com.xinhu.common.translation.core.TranslationInterface;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * OSS翻译实现
  *
  * @author Lion Li
  */
-@AllArgsConstructor
+@Slf4j
+@RequiredArgsConstructor
+//@Service
 @TranslationType(type = TransConstant.OSS_ID_TO_URL)
 public class OssUrlTranslationImpl implements TranslationInterface<String> {
 

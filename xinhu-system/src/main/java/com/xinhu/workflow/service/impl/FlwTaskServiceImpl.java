@@ -146,9 +146,9 @@ public class FlwTaskServiceImpl implements IFlwTaskService {
             .flowCode(startProcessBo.getFlowCode())
             .variable(startProcessBo.getVariables())
             .flowStatus(BusinessStatusEnum.DRAFT.getStatus());
-        Instance instance;
+        FlowInstance instance;
         try {
-            instance = insService.start(businessId, flowParams);
+            instance = (FlowInstance)insService.start(businessId, flowParams);
         } catch (Exception e) {
             throw new ServiceException(e.getMessage());
         }

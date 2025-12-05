@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinhu.common.constant.CacheNames;
 import com.xinhu.common.constant.SystemConstants;
 import com.xinhu.common.constant.UserConstants;
 import com.xinhu.common.core.domain.PageQuery;
@@ -21,6 +22,7 @@ import com.xinhu.common.core.service.DeptService;
 import com.xinhu.common.exception.ServiceException;
 import com.xinhu.common.helper.DataBaseHelper;
 import com.xinhu.common.helper.LoginHelper;
+import com.xinhu.common.utils.ObjectUtils;
 import com.xinhu.common.utils.StreamUtils;
 import com.xinhu.common.utils.StringUtils;
 import com.xinhu.common.utils.TreeBuildUtils;
@@ -32,6 +34,7 @@ import com.xinhu.system.mapper.SysRoleMapper;
 import com.xinhu.system.mapper.SysUserMapper;
 import com.xinhu.system.service.ISysDeptService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -158,6 +161,18 @@ public class SysDeptServiceImpl implements ISysDeptService, DeptService {
     @Override
     public SysDept selectDeptById(Long deptId) {
         return baseMapper.selectById(deptId);
+    }
+
+    @Cacheable(cacheNames = CacheNames.SYS_DEPT, key = "#deptId")
+    public SysDeptVo selectDeptVoById(Long deptId) {
+        SysDeptVo dept = baseMapper.selectVoById(deptId);
+        if (ObjectUtil.isNull(dept)) {
+            return null;
+        }
+        SysDeptVo parentDept = baseMapper.selectVoOne(new LambdaQueryWrapper<SysDept>()
+            .select(SysDept::getDeptName).eq(SysDept::getDeptId, dept.getParentId()));
+        dept.setParentName(ObjectUtils.notNullGetter(parentDept, SysDeptVo::getDeptName));
+        return dept;
     }
 
     /**
@@ -330,7 +345,7 @@ public class SysDeptServiceImpl implements ISysDeptService, DeptService {
     public String selectDeptNameByIds(String deptIds) {
         List<String> list = new ArrayList<>();
         for (Long id : StringUtils.splitTo(deptIds, Convert::toLong)) {
-            SysDept vo = SpringUtils.getAopProxy(this).selectDeptById(id);
+            SysDeptVo vo = SpringUtils.getAopProxy(this).selectDeptVoById(id);
             if (ObjectUtil.isNotNull(vo)) {
                 list.add(vo.getDeptName());
             }

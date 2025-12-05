@@ -63,14 +63,14 @@ import { flowHisTaskList } from '@/api/workflow/instance';
 import { listByIds } from '@/api/system/oss';
 import FlowChart from '@/components/Process/flowChart.vue';
 const { proxy } = getCurrentInstance();
-const { wf_task_status } = toRefs<any>(proxy?.useDict('wf_task_status'));
+const { wf_task_status } = toRefs(proxy?.useDict('wf_task_status'));
 const props = defineProps({
   width: '80%',
   height: '100%'
 });
 const loading = ref(false);
 const visible = ref(false);
-const historyList = ref<Array<any>>([]);
+const historyList = ref([]);
 const tabActiveName = ref('image');
 const insId = ref(null);
 
