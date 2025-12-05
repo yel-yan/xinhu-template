@@ -50,12 +50,14 @@ public class SysUserOnlineController extends BaseController {
         Collection<String> keys = RedisUtils.keys(CacheConstants.ONLINE_TOKEN_KEY + "*");
         List<UserOnlineDTO> userOnlineDTOList = new ArrayList<>();
         for (String key : keys) {
-            String token = key.replace(CacheConstants.LOGIN_TOKEN_KEY, "");
+//            String token = key.replace(CacheConstants.LOGIN_TOKEN_KEY, "");
+            String token = StringUtils.substringAfterLast(key, ":");
             // 如果已经过期则跳过
             if (StpUtil.stpLogic.getTokenActiveTimeoutByToken(token) < 0) {
                 continue;
             }
-            UserOnlineDTO dto = CacheUtils.get(CacheNames.ONLINE_TOKEN, token);
+//            UserOnlineDTO dto = CacheUtils.get(CacheNames.ONLINE_TOKEN, token);
+            UserOnlineDTO dto = RedisUtils.getCacheObject(CacheConstants.ONLINE_TOKEN_KEY + token);
             userOnlineDTOList.add(dto);
         }
         if (StringUtils.isNotEmpty(ipaddr) && StringUtils.isNotEmpty(userName)) {

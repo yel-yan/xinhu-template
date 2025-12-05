@@ -6,6 +6,7 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
+import com.xinhu.common.constant.CacheConstants;
 import com.xinhu.common.constant.CacheNames;
 import com.xinhu.common.core.domain.dto.UserOnlineDTO;
 import com.xinhu.common.core.domain.model.LoginUser;
@@ -14,9 +15,12 @@ import com.xinhu.common.helper.LoginHelper;
 import com.xinhu.common.utils.ServletUtils;
 import com.xinhu.common.utils.redis.CacheUtils;
 import com.xinhu.common.utils.ip.AddressUtils;
+import com.xinhu.common.utils.redis.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.time.Duration;
 
 /**
  * 用户行为 侦听器的实现
@@ -54,6 +58,11 @@ public class UserActionListener implements SaTokenListener {
                 // 增加 ttl 过期时间 单位秒
                 cacheNames = CacheNames.ONLINE_TOKEN + "#" + tokenConfig.getTimeout() + "s";
             }
+            if(tokenConfig.getTimeout() == -1) {
+                RedisUtils.setCacheObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto);
+            } else {
+                RedisUtils.setCacheObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto, Duration.ofSeconds(tokenConfig.getTimeout()));
+            }
             CacheUtils.put(cacheNames, tokenValue, dto);
             log.info("user doLogin, userId:{}, token:{}", loginId, tokenValue);
         } else if (userType == UserType.APP_USER) {
@@ -67,6 +76,7 @@ public class UserActionListener implements SaTokenListener {
     @Override
     public void doLogout(String loginType, Object loginId, String tokenValue) {
         CacheUtils.evict(CacheNames.ONLINE_TOKEN, tokenValue);
+        RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
         log.info("user doLogout, userId:{}, token:{}", loginId, tokenValue);
     }
 
@@ -76,6 +86,7 @@ public class UserActionListener implements SaTokenListener {
     @Override
     public void doKickout(String loginType, Object loginId, String tokenValue) {
         CacheUtils.evict(CacheNames.ONLINE_TOKEN, tokenValue);
+        RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
         log.info("user doLogoutByLoginId, userId:{}, token:{}", loginId, tokenValue);
     }
 
