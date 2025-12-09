@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xinhu.wrokflow.mapper.FlwTaskMapper">
-    <resultMap type="com.xinhu.wrokflow.domain.vo.FlowTaskVo" id="FlowTaskResult">
+<mapper namespace="com.xinhu.workflow.mapper.FlwTaskMapper">
+    <resultMap type="com.xinhu.workflow.domain.vo.FlowTaskVo" id="FlowTaskResult">
     </resultMap>
-    <resultMap type="com.xinhu.wrokflow.domain.vo.FlowHisTaskVo" id="FlowHisTaskResult">
+    <resultMap type="com.xinhu.workflow.domain.vo.FlowHisTaskVo" id="FlowHisTaskResult">
     </resultMap>
 
     <select id="getListRunTask" resultMap="FlowTaskResult">

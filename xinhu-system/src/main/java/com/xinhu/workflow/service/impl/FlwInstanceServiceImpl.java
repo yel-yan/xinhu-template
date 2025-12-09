@@ -85,7 +85,6 @@ public class FlwInstanceServiceImpl implements IFlwInstanceService {
     public TableDataInfo<FlowInstance> selectRunningInstanceList(FlowInstanceBo flowInstanceBo, PageQuery pageQuery) {
         QueryWrapper<FlowInstance> queryWrapper = buildQueryWrapper(flowInstanceBo);
         queryWrapper.in("fi.flow_status", BusinessStatusEnum.runningStatus());
-        System.out.println("11111111111111:"+queryWrapper.isEmptyOfWhere());
         Page<FlowInstance> page = flwInstanceMapper.selectInstanceList(pageQuery.build(), queryWrapper);
         return TableDataInfo.build(page);
     }
@@ -143,10 +142,6 @@ public class FlwInstanceServiceImpl implements IFlwInstanceService {
         queryWrapper.in(CollUtil.isNotEmpty(flowInstanceBo.getCreateByIds()), "fi.create_by", flowInstanceBo.getCreateByIds());
         queryWrapper.eq("fi.del_flag", "0");
         queryWrapper.orderByDesc("fi.create_time");
-        System.out.println("1111111111111111:"+queryWrapper.getCustomSqlSegment());
-        System.out.println("2222222222:"+queryWrapper.getSqlSelect());
-        System.out.println("33333333333:"+queryWrapper.getSqlSegment());
-
         return queryWrapper;
     }
 
